@@ -1,0 +1,53 @@
+name: Guard
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  sensitive-data:
+    name: Personal data and secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Scan tracked files
+        env:
+          SENSITIVE_TERMS: ${{ secrets.SENSITIVE_TERMS }}
+        run: python scripts/check_sensitive.py
+      - name: Scan git history for secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  readme-fresh:
+    name: README kept current
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Require a README update when the product changes
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          SKIP: ${{ contains(github.event.pull_request.labels.*.name, 'no-readme-change') }}
+        run: |
+          changed=$(git diff --name-only "origin/${BASE_REF}...HEAD")
+          echo "Changed files:"; echo "$changed"
+          if [ "$SKIP" = "true" ]; then
+            echo "Label no-readme-change set, skipping."; exit 0
+          fi
+          if echo "$changed" | grep -qE '^(src|domains|evals|app)/' && ! echo "$changed" | grep -qx 'README.md'; then
+            echo "::error::Product files changed but README.md did not. Update status, progress, results or build log (see AGENTS.md, rule 1)."
+            exit 1
+          fi
+          echo "README check passed."

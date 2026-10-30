@@ -1,0 +1,29 @@
+# Secrets and personal guard list (never commit)
+.env
+.env.*
+!.env.example
+.sensitive-terms
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Eval run artifacts (reports worth keeping are copied to docs/)
+runs/
+.cache/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS and editors
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
