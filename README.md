@@ -9,13 +9,13 @@
 <p align="center">An eval-first AI decision copilot that checks a business change against your written rules, cites every claim, and hands the decision to a human when it is not sure.</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/status-spec%20in%20review-orange" alt="Status: spec in review">
+  <img src="https://img.shields.io/badge/status-building%20M2-orange" alt="Status: building milestone M2">
   <img src="https://img.shields.io/badge/evals-not%20run%20yet-lightgrey" alt="Evals: not run yet">
   <img src="https://img.shields.io/badge/data-100%25%20fictional-blue" alt="Data: 100% fictional">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License: MIT">
 </p>
 
-> **Status (October 2026):** the product spec is in review. No code and no results yet. This page always shows the real state of the project.
+> **Status (October 2026):** the [product spec](SPEC.md) is approved. Next milestone: the commercial policy pack (fictional corpus and labelled test set). No code and no results yet. This page always shows the real state of the project.
 
 <p align="center">
   <img src="assets/hero-before-after.png" alt="Before and after: a typical chatbot approves a request with no sources, while Clearance clears the markup with citations and escalates a payout conflict to Finance" width="100%">
@@ -31,15 +31,15 @@ A live demo with a daily cap, plus a gallery of precomputed cases, is planned fo
 
 ## Numbers
 
-Nothing is measured yet. This table will hold real results, model by model, dated, as soon as the first eval run lands. Targets are set in the [spec](https://github.com/ducharnesylvain/Clearance/pull/1).
+Nothing is measured yet. This table will hold real results, model by model, dated, as soon as the first eval run lands. Targets are fixed in the [spec](SPEC.md#93-metrics-and-targets).
 
 | Metric | What it answers | Result |
 |---|---|---|
-| Verdict accuracy | Is the decision right? | Not measured yet |
-| Escalation recall | Does it escalate when it should? | Not measured yet |
-| Citation precision / recall | Are the sources right and complete? | Not measured yet |
-| Unsupported claim rate | Does it invent anything? | Not measured yet |
-| Injection resistance | Does it ignore instructions hidden in documents? | Not measured yet |
+| Verdict accuracy (target 85%) | Is the decision right? | Not measured yet |
+| Escalation recall (target 90%) | Does it escalate when it should? | Not measured yet |
+| Citation precision / recall (target 90%) | Are the sources right and complete? | Not measured yet |
+| Unsupported claim rate (target 2% max) | Does it invent anything? | Not measured yet |
+| Injection resistance (target 100%) | Does it ignore instructions hidden in documents? | Not measured yet |
 | Cost per decision, latency | What does it cost to run? | Not measured yet |
 
 When results exist, a quality versus cost chart for the four models will sit at the top of this page.
@@ -133,8 +133,8 @@ One engine, many domains. A pack is a folder with rules, a decision schema, opti
 
 | Pack | Question it answers | Status |
 |---|---|---|
-| **Commercial policy** (fictional experiences marketplace) | Can we launch this commercial rule, and what does it require from Finance? | Planned, first |
-| **Freight matching** (fictional freight marketplace) | Can this carrier take this load on this lane at this price, given lane, hazardous-goods and cabotage rules? | Planned, second |
+| **Commercial policy** (Wandrel, a fictional experiences marketplace) | Can we launch this commercial rule, and what does it require from Finance? | In progress (M2) |
+| **Freight matching** (Corvane, a fictional freight marketplace) | Can this carrier take this load on this lane at this price, given lane, hazardous-goods and cabotage rules? | Planned, second |
 
 The freight pack is the portability test: it must run with zero engine changes, and the time to add it will be reported.
 
@@ -163,7 +163,7 @@ Teams ask for clearance before a launch. Sometimes the honest answer is "not yet
 - [x] Product framing and name
 - [x] Repository with personal-data and secret guard from the first commit
 - [x] Product presentation: logo, before/after mockup, FAQ, stated limits
-- [ ] Product spec validated ([in review](https://github.com/ducharnesylvain/Clearance/pull/1))
+- [x] Product spec approved ([SPEC.md](SPEC.md), [decision log](docs/decisions.md))
 - [ ] Commercial pack: fictional corpus and labelled test set
 - [ ] Eval harness and baselines
 - [ ] Architecture and model comparison
@@ -176,8 +176,15 @@ Teams ask for clearance before a launch. Sometimes the honest answer is "not yet
 
 | Date | Change |
 |---|---|
+| 2026-10-30 | Product spec v1.0 approved: metric targets fixed, 4 models and 4 architectures to compare, fictional companies Wandrel and Corvane, demo capped at 100 requests per day |
 | 2026-10-30 | New presentation: logo, before/after mockup, example output, FAQ and stated limits |
 | 2026-10-30 | Repository created: README, agent rules, license, personal-data and secret guard, README freshness check |
+
+## Key documents
+
+- [Product spec](SPEC.md): what is built, how it is measured
+- [Decision log](docs/decisions.md): every non-trivial choice and its trade-off
+- [Agent and contributor rules](AGENTS.md)
 
 ## About the author
 
