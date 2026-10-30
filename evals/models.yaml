@@ -1,0 +1,34 @@
+# Models under comparison (SPEC section 8, decision D5).
+# model_id: the exact API identifier, pinned at the first eval run.
+# Prices: USD per million tokens, copied from the vendor's pricing page with the date
+# in a comment. Leave null until checked: cost is then reported as "not priced".
+# temperature: set to null for models that do not accept it.
+models:
+  claude-small:
+    provider: anthropic
+    model_id: claude-haiku-5-5
+    max_tokens: 2000
+    temperature: 0.0
+    price_in_per_mtok: null
+    price_out_per_mtok: null
+  claude-large:
+    provider: anthropic
+    model_id: claude-opus-5-5
+    max_tokens: 2000
+    temperature: 0.0
+    price_in_per_mtok: null
+    price_out_per_mtok: null
+  gpt:
+    provider: openai
+    model_id: null   # to pin at first run
+    max_tokens: 2000
+    temperature: 0.0
+    price_in_per_mtok: null
+    price_out_per_mtok: null
+  gemini:
+    provider: google
+    model_id: null   # to pin at first run
+    max_tokens: 2000
+    temperature: 0.0
+    price_in_per_mtok: null
+    price_out_per_mtok: null
