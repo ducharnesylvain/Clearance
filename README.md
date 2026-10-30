@@ -15,7 +15,7 @@
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License: MIT">
 </p>
 
-> **Status (October 2026):** the [product spec](SPEC.md) is approved. The commercial policy pack is drafted (20 fictional policies, 40 labelled cases) and its labels are in review. No engine and no results yet. This page always shows the real state of the project.
+> **Status (October 2026):** the engine and the eval harness are built and tested offline (18 tests, no model called). The first scored run of architectures A and B is waiting for API keys. The commercial pack (20 fictional policies, 40 cases) is drafted and its labels are in review. No results yet. This page always shows the real state of the project.
 
 <p align="center">
   <img src="assets/hero-before-after.png" alt="Before and after: a typical chatbot approves a request with no sources, while Clearance clears the markup with citations and escalates a payout conflict to Finance" width="100%">
@@ -31,6 +31,7 @@ A live demo with a daily cap, plus a gallery of precomputed cases, is planned fo
 
 ## Numbers
 
+<!-- results:start -->
 Nothing is measured yet. This table will hold real results, model by model, dated, as soon as the first eval run lands. Targets are fixed in the [spec](SPEC.md#93-metrics-and-targets).
 
 | Metric | What it answers | Result |
@@ -42,7 +43,9 @@ Nothing is measured yet. This table will hold real results, model by model, date
 | Injection resistance (target 100%) | Does it ignore instructions hidden in documents? | Not measured yet |
 | Cost per decision, latency | What does it cost to run? | Not measured yet |
 
-When results exist, a quality versus cost chart for the four models will sit at the top of this page.
+<!-- results:end -->
+
+This block is rewritten by `python -m evals.report` from the latest published run. When results exist, a quality versus cost chart for the four models will sit at the top of this page.
 
 ## How it works
 
@@ -65,7 +68,9 @@ flowchart LR
     G --> V[Eval harness<br/>runs on every change]
 ```
 
-### Example (planned interface, may change)
+### Example
+
+The Python interface below is implemented and tested offline; it has not been run against a real model yet.
 
 ```python
 from clearance import decide
@@ -158,6 +163,24 @@ That is what domain packs are for: copy one, replace the rules and the test case
 **Why the name?**
 Teams ask for clearance before a launch. Sometimes the honest answer is "not yet, ask Finance".
 
+## Run it yourself
+
+```bash
+pip install -e ".[providers,dev]"
+pytest -q                                   # offline tests, no API key needed
+
+# offline dry run of the whole pipeline (fake model)
+python -m evals.run --pack domains/commercial-policy --split dev --arch A B --models fake
+
+# real run: set ANTHROPIC_API_KEY (and OPENAI_API_KEY, GOOGLE_API_KEY for other vendors)
+python -m evals.run --pack domains/commercial-policy --split dev --arch A B --models claude-small claude-large
+
+# publish a run: copies the report to docs/results/ and refreshes the Numbers block above
+python -m evals.report runs/<run-folder>
+```
+
+Models and prices live in [`evals/models.yaml`](evals/models.yaml). The holdout split only runs with `--confirm-holdout`. Runs can also be started from GitHub: Actions, then Evals, then Run workflow.
+
 ## Roadmap
 
 - [x] Product framing and name
@@ -165,7 +188,7 @@ Teams ask for clearance before a launch. Sometimes the honest answer is "not yet
 - [x] Product presentation: logo, before/after mockup, FAQ, stated limits
 - [x] Product spec approved ([SPEC.md](SPEC.md), [decision log](docs/decisions.md))
 - [ ] Commercial pack: fictional corpus and labelled test set (drafted; 0 of 40 labels validated)
-- [ ] Eval harness and baselines
+- [ ] Eval harness and baselines (harness built and tested offline; first run of A and B pending API keys)
 - [ ] Architecture and model comparison
 - [ ] Escalation calibration, review queue, feedback loop
 - [ ] Freight pack (portability test)
@@ -176,6 +199,7 @@ Teams ask for clearance before a launch. Sometimes the honest answer is "not yet
 
 | Date | Change |
 |---|---|
+| 2026-10-30 | Engine and eval harness built: decision schema, architectures A and B, adapters for Anthropic, OpenAI and Google, 11 deterministic metrics checked against the spec targets, holdout guard, 18 offline tests in CI |
 | 2026-10-30 | Wandrel pack drafted: 20 fictional policies (154 numbered clauses, 2 superseded versions, 4 planted conflicts, 1 prompt injection, 1 distractor) and 40 labelled cases (30 dev, 10 holdout), checked in CI |
 | 2026-10-30 | Product spec v1.0 approved: metric targets fixed, 4 models and 4 architectures to compare, fictional companies Wandrel and Corvane, demo capped at 100 requests per day |
 | 2026-10-30 | New presentation: logo, before/after mockup, example output, FAQ and stated limits |

@@ -1,0 +1,74 @@
+name: Evals
+
+on:
+  workflow_dispatch:
+    inputs:
+      split:
+        description: "dev or holdout (holdout: once per milestone)"
+        default: dev
+      arch:
+        description: "Architectures, space separated (A B)"
+        default: "A B"
+      models:
+        description: "Models from evals/models.yaml, space separated"
+        default: "claude-small claude-large"
+      repeats:
+        description: "Repeats per case (3 for holdout)"
+        default: "1"
+  pull_request:
+    paths: ["src/**", "evals/**", "domains/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Smoke eval (5 dev cases, cheapest model)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[providers]"
+      - name: Run smoke eval (skipped when no API key is configured)
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "ANTHROPIC_API_KEY not set: smoke eval skipped." >> "$GITHUB_STEP_SUMMARY"; exit 0
+          fi
+          python -m evals.run --pack domains/commercial-policy --split dev --arch B --models claude-small --limit 5
+          cat runs/*/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+  full:
+    name: Full eval run
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[providers]"
+      - name: Run evals
+        env:
+          SPLIT: ${{ inputs.split }}
+          ARCH: ${{ inputs.arch }}
+          MODELS: ${{ inputs.models }}
+          REPEATS: ${{ inputs.repeats }}
+        run: |
+          extra=""
+          if [ "$SPLIT" = "holdout" ]; then extra="--confirm-holdout"; fi
+          python -m evals.run --pack domains/commercial-policy --split "$SPLIT" \
+            --arch $ARCH --models $MODELS --repeats "$REPEATS" $extra
+          cat runs/*/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eval-run
+          path: runs/
