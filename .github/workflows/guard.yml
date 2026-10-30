@@ -28,6 +28,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  domain-packs:
+    name: Domain packs valid
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate every pack (corpus, citations, case mix)
+        run: |
+          shopt -s nullglob
+          for pack in domains/*/; do
+            python scripts/validate_pack.py "$pack"
+          done
+
   readme-fresh:
     name: README kept current
     if: github.event_name == 'pull_request'

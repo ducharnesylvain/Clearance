@@ -50,6 +50,7 @@ Any non-trivial choice (architecture, model, threshold, scope cut) gets a short 
 ```bash
 pip install pre-commit && pre-commit install   # enable the guard locally
 python scripts/check_sensitive.py               # scan all tracked files
+python scripts/validate_pack.py domains/commercial-policy --write-review   # check a pack, refresh its review sheet
 ```
 
 Optional: put personal terms you never want committed (your name, address, phone) in a local `.sensitive-terms` file, one per line. It is git-ignored and read by the guard. In CI, the same list can be provided through the `SENSITIVE_TERMS` repository secret.

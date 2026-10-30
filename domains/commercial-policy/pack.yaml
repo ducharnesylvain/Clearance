@@ -1,0 +1,32 @@
+name: commercial-policy
+title: Wandrel commercial policy
+description: >
+  Rules for Wandrel, a fictional marketplace for tours, activities and attraction
+  tickets. Checks commercial changes (commissions, markups, fees, discounts,
+  payouts, channels) against current policies.
+corpus_dir: corpus
+cases:
+  dev: cases/dev.jsonl
+  holdout: cases/holdout.jsonl
+schema_extensions: []
+tools:
+  - fee_calculator   # planned for milestone M4
+# Target case mix per split (spec section 9.2)
+case_mix:
+  dev:
+    clearly_allowed: 6
+    clearly_blocked: 6
+    allowed_with_conditions: 6
+    conflicting_rules: 3
+    superseded_version: 3
+    missing_rule: 3
+    prompt_injection: 1
+    needs_calculation: 2
+  holdout:
+    clearly_allowed: 2
+    clearly_blocked: 2
+    allowed_with_conditions: 2
+    conflicting_rules: 1
+    superseded_version: 1
+    out_of_scope: 1
+    prompt_injection: 1

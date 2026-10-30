@@ -15,7 +15,7 @@
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License: MIT">
 </p>
 
-> **Status (October 2026):** the [product spec](SPEC.md) is approved. Next milestone: the commercial policy pack (fictional corpus and labelled test set). No code and no results yet. This page always shows the real state of the project.
+> **Status (October 2026):** the [product spec](SPEC.md) is approved. The commercial policy pack is drafted (20 fictional policies, 40 labelled cases) and its labels are in review. No engine and no results yet. This page always shows the real state of the project.
 
 <p align="center">
   <img src="assets/hero-before-after.png" alt="Before and after: a typical chatbot approves a request with no sources, while Clearance clears the markup with citations and escalates a payout conflict to Finance" width="100%">
@@ -133,7 +133,7 @@ One engine, many domains. A pack is a folder with rules, a decision schema, opti
 
 | Pack | Question it answers | Status |
 |---|---|---|
-| **Commercial policy** (Wandrel, a fictional experiences marketplace) | Can we launch this commercial rule, and what does it require from Finance? | In progress (M2) |
+| **Commercial policy** (Wandrel, a fictional experiences marketplace) | Can we launch this commercial rule, and what does it require from Finance? | [Drafted](domains/commercial-policy/): 20 policies, 40 cases, labels in review |
 | **Freight matching** (Corvane, a fictional freight marketplace) | Can this carrier take this load on this lane at this price, given lane, hazardous-goods and cabotage rules? | Planned, second |
 
 The freight pack is the portability test: it must run with zero engine changes, and the time to add it will be reported.
@@ -164,7 +164,7 @@ Teams ask for clearance before a launch. Sometimes the honest answer is "not yet
 - [x] Repository with personal-data and secret guard from the first commit
 - [x] Product presentation: logo, before/after mockup, FAQ, stated limits
 - [x] Product spec approved ([SPEC.md](SPEC.md), [decision log](docs/decisions.md))
-- [ ] Commercial pack: fictional corpus and labelled test set
+- [ ] Commercial pack: fictional corpus and labelled test set (drafted; 0 of 40 labels validated)
 - [ ] Eval harness and baselines
 - [ ] Architecture and model comparison
 - [ ] Escalation calibration, review queue, feedback loop
@@ -176,6 +176,7 @@ Teams ask for clearance before a launch. Sometimes the honest answer is "not yet
 
 | Date | Change |
 |---|---|
+| 2026-10-30 | Wandrel pack drafted: 20 fictional policies (154 numbered clauses, 2 superseded versions, 4 planted conflicts, 1 prompt injection, 1 distractor) and 40 labelled cases (30 dev, 10 holdout), checked in CI |
 | 2026-10-30 | Product spec v1.0 approved: metric targets fixed, 4 models and 4 architectures to compare, fictional companies Wandrel and Corvane, demo capped at 100 requests per day |
 | 2026-10-30 | New presentation: logo, before/after mockup, example output, FAQ and stated limits |
 | 2026-10-30 | Repository created: README, agent rules, license, personal-data and secret guard, README freshness check |
@@ -184,6 +185,7 @@ Teams ask for clearance before a launch. Sometimes the honest answer is "not yet
 
 - [Product spec](SPEC.md): what is built, how it is measured
 - [Decision log](docs/decisions.md): every non-trivial choice and its trade-off
+- [Wandrel pack](domains/commercial-policy/): fictional world, labelling guide, [label review sheet](domains/commercial-policy/cases/REVIEW.md)
 - [Agent and contributor rules](AGENTS.md)
 
 ## About the author
