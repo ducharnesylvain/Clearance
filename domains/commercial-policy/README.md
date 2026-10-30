@@ -58,7 +58,7 @@ These are deliberate, so the test set can check them. They are listed here for r
 
 ## Labelling guide
 
-Every case has one expected verdict. Labels follow these rules, so two reviewers reach the same answer.
+Every case has one expected verdict. Labels follow these rules, so two reviewers reach the same answer. The approval rule below was confirmed by the product owner on 2026-10-30 (see the [decision log](../../docs/decisions.md)).
 
 | Verdict | Use it when |
 |---|---|

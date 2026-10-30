@@ -2,6 +2,12 @@
 
 One entry per non-trivial choice: context, decision, why, trade-off. Newest first.
 
+## 2026-10-30: Labelling rule for approvals
+
+| Decision | Choice | Why | Trade-off |
+|---|---|---|---|
+| Verdict when a change needs an approval | `clear_with_conditions`, naming the approver; `escalate` only for conflicting rules, missing rules or out-of-scope requests | When the rules already say who decides, the system can route the decision without a human triage step; escalation stays reserved for cases the rules cannot settle | Approval-heavy changes still reach a person, through the named approver rather than the review queue |
+
 ## 2026-10-30: Spec v1.0 approved
 
 | Decision | Choice | Why | Trade-off |
