@@ -1,56 +1,50 @@
-# Clearance
+<p align="center">
+  <img src="assets/logo.svg" width="96" alt="Clearance logo">
+</p>
 
-**Grounded clearance for business rules.** An eval-first AI decision copilot that checks a proposed business change against your written policies, cites every claim, and hands the decision to a human when it is not sure.
+<h1 align="center">Clearance</h1>
 
-![Status](https://img.shields.io/badge/status-spec%20in%20review-orange) ![Evals](https://img.shields.io/badge/evals-not%20run%20yet-lightgrey) ![Data](https://img.shields.io/badge/data-100%25%20fictional-blue) ![License](https://img.shields.io/badge/license-MIT-green)
+<p align="center"><em>Clears what's clear. Escalates the rest.</em></p>
 
-> **Status (October 2026):** project started. The product spec is in review; no code or results yet. This page is updated with every change, so what you read here is the real state of the project.
+<p align="center">An eval-first AI decision copilot that checks a business change against your written rules, cites every claim, and hands the decision to a human when it is not sure.</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/status-spec%20in%20review-orange" alt="Status: spec in review">
+  <img src="https://img.shields.io/badge/evals-not%20run%20yet-lightgrey" alt="Evals: not run yet">
+  <img src="https://img.shields.io/badge/data-100%25%20fictional-blue" alt="Data: 100% fictional">
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="License: MIT">
+</p>
+
+> **Status (October 2026):** the product spec is in review. No code and no results yet. This page always shows the real state of the project.
+
+<p align="center">
+  <img src="assets/hero-before-after.png" alt="Before and after: a typical chatbot approves a request with no sources, while Clearance clears the markup with citations and escalates a payout conflict to Finance" width="100%">
+</p>
+
+Teams launch new commercial rules all the time: a markup, a fee, a new payout schedule. Someone has to check each one against policies that live in scattered documents and in a few experts' heads. Clearance gives that first answer in seconds, with sources, and **knows when to stop**. A human always signs off.
 
 ---
 
-## Why this exists
+## Try it
 
-In a marketplace, teams constantly want to launch new commercial rules: a markup, a new fee, a different payout schedule for suppliers. Before launch, someone has to answer four questions:
+A live demo with a daily cap, plus a gallery of precomputed cases, is planned for milestone M7. Until then, the mockup above and the example below show the exact output contract.
 
-1. Is this allowed by our policies?
-2. What does it change for Finance (which accounting events, which reports)?
-3. What could break?
-4. What is still undecided?
+## Numbers
 
-Today the answers live in scattered documents and in the heads of a few experts. The result is slow launches, long review queues for platform and Finance teams, and costly mistakes.
+Nothing is measured yet. This table will hold real results, model by model, dated, as soon as the first eval run lands. Targets are set in the [spec](https://github.com/ducharnesylvain/Clearance/pull/1).
 
-**Clearance gives a first answer in seconds, with sources, and knows when to stop.** It is decision support: a human always signs off.
+| Metric | What it answers | Result |
+|---|---|---|
+| Verdict accuracy | Is the decision right? | Not measured yet |
+| Escalation recall | Does it escalate when it should? | Not measured yet |
+| Citation precision / recall | Are the sources right and complete? | Not measured yet |
+| Unsupported claim rate | Does it invent anything? | Not measured yet |
+| Injection resistance | Does it ignore instructions hidden in documents? | Not measured yet |
+| Cost per decision, latency | What does it cost to run? | Not measured yet |
 
-## What it does
+When results exist, a quality versus cost chart for the four models will sit at the top of this page.
 
-You describe a request in plain language:
-
-> *"Add a 5% markup on activities sold through reseller partners, and pay those suppliers monthly instead of weekly."*
-
-Clearance retrieves the relevant rules and returns a structured decision:
-
-| Field | Example |
-|---|---|
-| **Verdict** | Clear with conditions |
-| **Required actions** | Book the markup as separate revenue, not as part of the supplier price |
-| **Risks** | Monthly payouts conflict with the onboarding rule for new suppliers |
-| **Open questions** | Who carries the currency risk on cross-border payouts? |
-| **Citations** | Every claim links to the exact policy section it comes from |
-| **Confidence** | Low confidence triggers an escalation to a human reviewer |
-
-## What makes it different from "yet another RAG demo"
-
-| Principle | In practice |
-|---|---|
-| **Evals before code** | A labelled test set is written first. The system is built to pass it, and every change is re-scored automatically. |
-| **Measure decisions, not prose** | Verdict accuracy, citation precision and recall, faithfulness to sources, and above all: does it escalate when it should? |
-| **Adversarial by design** | The test set includes conflicting rules, outdated rule versions, missing rules and instructions hidden inside documents to manipulate the model. |
-| **Architecture chosen on evidence** | Four approaches compared on the same test set: model only, full corpus in the prompt, retrieval (RAG), retrieval plus tools. The simplest one that meets the bar wins. |
-| **Model choice on evidence** | Four models from three vendors (Anthropic, OpenAI, Google) compared on quality, cost per decision and latency. |
-| **Human in the loop as a feature** | Escalations go to a review queue. Every human correction becomes a new test case, so the system improves with use. |
-| **Generic core, pluggable domains** | One engine, many "domain packs". Adding a new domain means adding documents, cases and tools, not rewriting the engine. |
-
-## Architecture (planned)
+## How it works
 
 ```mermaid
 flowchart LR
@@ -59,45 +53,117 @@ flowchart LR
         C[Policy corpus<br/>versioned, dated]
         S[Decision schema]
         T[Domain tools<br/>e.g. fee impact]
-        G[Golden test set]
+        G[Labelled test set]
     end
     C --> E
     S --> E
     T --> E
     E --> D[Structured decision<br/>verdict, actions, risks,<br/>questions, citations]
-    D -->|confident| U[User]
-    D -->|low confidence| H[Human review queue]
+    D -->|confident| U[Requester]
+    D -->|not sure| H[Human review queue]
     H -->|correction| G
     G --> V[Eval harness<br/>runs on every change]
-    V --> R[Eval report]
 ```
 
+### Example (planned interface, may change)
+
+```python
+from clearance import decide
+
+decision = decide(
+    pack="commercial-policy",
+    request="Add a 5% markup on activities sold through reseller partners, "
+            "and pay those suppliers monthly instead of weekly.",
+)
+```
+
+```json
+{
+  "verdict": "escalate",
+  "escalation_reason": "conflicting_rules",
+  "confidence": 0.41,
+  "summary": "The markup can go ahead with conditions. The payout change hits two current rules that conflict.",
+  "conditions": [
+    {"text": "Keep the reseller markup at or below 8%.", "citations": ["C1"]}
+  ],
+  "required_actions": [
+    {"text": "Book the markup as its own revenue line, not inside the supplier price.", "citations": ["C2"]}
+  ],
+  "risks": [
+    {"text": "New reseller suppliers would be paid monthly despite the 90-day weekly rule.", "severity": "high", "citations": ["C3", "C4"]}
+  ],
+  "open_questions": [
+    {"text": "Which rule wins for new reseller suppliers?"}
+  ],
+  "citations": [
+    {"id": "C1", "doc_id": "pricing-policy", "version": "2.3", "section": "5.1", "quote": "Reseller channel markups may not exceed 8% of the supplier net price."},
+    {"id": "C2", "doc_id": "revenue-recognition", "version": "2.0", "section": "3.1", "quote": "Markups are recognised as platform revenue and reported separately from supplier cost."},
+    {"id": "C3", "doc_id": "payouts-policy", "version": "3.0", "section": "4.2", "quote": "Suppliers in their first 90 days on the platform are paid weekly."},
+    {"id": "C4", "doc_id": "reseller-terms", "version": "1.4", "section": "2.1", "quote": "Suppliers selling through the reseller channel may be paid monthly."}
+  ]
+}
+```
+
+Every claim points to an exact, versioned quote. Quotes are checked against the source in code, not by a model.
+
+## Why it is not another RAG demo
+
+| Principle | In practice |
+|---|---|
+| **Evals before code** | The labelled test set exists before the system. Every change is re-scored. |
+| **Measure decisions, not prose** | Verdicts, citations, faithfulness, and above all escalation when it should. |
+| **Adversarial cases** | Conflicting rules, outdated rule versions, missing rules, instructions hidden in documents. |
+| **Architecture on evidence** | Model only, whole corpus in the prompt, retrieval, retrieval plus tools: the simplest one that meets the bar wins. |
+| **Models on evidence** | Two Claude models, one GPT model, one Gemini model, compared on quality, cost per decision and latency. |
+| **Human in the loop as a feature** | Escalations go to a review queue. Every correction becomes a new test case. |
+
+## What the results will not prove
+
+Stated up front, so the numbers are read for what they are:
+
+- **The corpus is fictional and written for this project.** Real policies are messier, longer and less consistent.
+- **The test set is small** (about 40 commercial and 30 freight cases). A gap of a few points between two models can be noise; variance across runs will be reported.
+- **Labels come from one domain expert.** There is no second annotator yet.
+- **There are no real users.** The evals measure decision quality, not adoption or time saved.
+- **Models change.** Every result is dated and tied to pinned model versions.
+
 ## Domain packs
+
+One engine, many domains. A pack is a folder with rules, a decision schema, optional tools and a labelled test set.
 
 | Pack | Question it answers | Status |
 |---|---|---|
 | **Commercial policy** (fictional experiences marketplace) | Can we launch this commercial rule, and what does it require from Finance? | Planned, first |
 | **Freight matching** (fictional freight marketplace) | Can this carrier take this load on this lane at this price, given lane, hazardous-goods and cabotage rules? | Planned, second |
 
-The second pack exists to prove the core is generic: the time it takes to add it will be measured and reported.
+The freight pack is the portability test: it must run with zero engine changes, and the time to add it will be reported.
 
-## Results
+## FAQ
 
-Nothing is measured yet. This table will hold the real numbers, model by model, as soon as the first eval run lands.
+**Is this just RAG?**
+No. Retrieval is one of four architectures under test, and it may lose to putting the whole corpus in the prompt. The product is the decision contract and the evidence behind it.
 
-| Metric | Target | Result |
-|---|---|---|
-| Verdict accuracy | Defined in the spec | Not measured yet |
-| Citation precision / recall | Defined in the spec | Not measured yet |
-| Unsupported claim rate | Defined in the spec | Not measured yet |
-| Escalation recall (escalates when it should) | Defined in the spec | Not measured yet |
-| Cost per decision / latency | Reported per model | Not measured yet |
+**Why won't it decide alone?**
+A wrong "clear" costs money. An extra escalation costs a reviewer a few minutes. Clearance is tuned for that asymmetry, and measured on it.
 
-## Progress
+**Is any of the data real?**
+No. Every company, policy, person and number is invented. A guard blocks personal data and secrets on every commit and in CI.
+
+**Why four models from three vendors?**
+To choose on evidence (quality, cost, latency) and to check that the result does not depend on one vendor. The model that grades answers never grades its own vendor.
+
+**Can I use it for my own domain?**
+That is what domain packs are for: copy one, replace the rules and the test cases, keep the engine.
+
+**Why the name?**
+Teams ask for clearance before a launch. Sometimes the honest answer is "not yet, ask Finance".
+
+## Roadmap
 
 - [x] Product framing and name
 - [x] Repository with personal-data and secret guard from the first commit
-- [ ] Product spec validated
+- [x] Product presentation: logo, before/after mockup, FAQ, stated limits
+- [ ] Product spec validated ([in review](https://github.com/ducharnesylvain/Clearance/pull/1))
 - [ ] Commercial pack: fictional corpus and labelled test set
 - [ ] Eval harness and baselines
 - [ ] Architecture and model comparison
@@ -106,31 +172,19 @@ Nothing is measured yet. This table will hold the real numbers, model by model, 
 - [ ] Live demo with cost controls
 - [ ] Eval report, decision log, 3-minute walkthrough
 
-## What this project demonstrates
-
-Built solo, end to end, as a portfolio project for AI product leadership roles.
-
-- **AI product judgment:** deciding where an LLM is useful, where it must stop, and proving it with numbers.
-- **Evaluation design:** golden sets, adversarial cases, judge calibration against human labels, a held-out split to avoid overfitting.
-- **Trade-off decisions:** architecture, model, cost and latency choices made on evidence and written down.
-- **Trust and risk:** grounding, citations, escalation, prompt-injection resistance, data hygiene.
-- **Platform thinking:** a generic core with pluggable domains, built for others to adopt.
-- **Shipping:** spec, build, CI, deployment and documentation, owned by one person.
-
 ## Build log
 
 | Date | Change |
 |---|---|
+| 2026-10-30 | New presentation: logo, before/after mockup, example output, FAQ and stated limits |
 | 2026-10-30 | Repository created: README, agent rules, license, personal-data and secret guard, README freshness check |
 
-## Data and disclaimer
+## About the author
 
-All companies, policies, people and figures in this repository are **fictional**. Any resemblance to real organisations is coincidental. Clearance is a decision-support tool, not legal, accounting or tax advice.
-
-## Contributing and forking
-
-Forks are welcome under the [MIT license](LICENSE). Contributor rules (for humans and AI agents) are in [AGENTS.md](AGENTS.md).
-
----
+Built solo, end to end, as a portfolio project for AI product leadership. It shows how I work on AI products: decide where a model helps and where it must stop, prove it with evaluations, make cost and quality trade-offs on evidence, and ship the whole thing (spec, build, CI, demo, docs).
 
 Built by **Sylvain Ducharne**, product leader in platforms, marketplaces and AI. [LinkedIn](https://www.linkedin.com/in/sylvainducharne/) | [GitHub](https://github.com/ducharnesylvain) <!-- sensitive-ok: author credit chosen by the owner -->
+
+## Data, disclaimer and license
+
+All companies, policies, people and figures here are **fictional**; any resemblance to real organisations is coincidental. Clearance is decision support, not legal, accounting or tax advice. Code under the [MIT license](LICENSE). Contributor rules for humans and AI agents are in [AGENTS.md](AGENTS.md).

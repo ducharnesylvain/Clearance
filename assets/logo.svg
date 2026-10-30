@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Clearance logo">
+  <rect width="128" height="128" rx="30" fill="#0F2A44"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 3)">
+    <path d="M27 65 L49 87 L80 56" stroke="#3DDC97" stroke-width="13"/>
+    <path d="M91 45 L104 32 M88 32 H104 V48" stroke="#F5A524" stroke-width="9"/>
+  </g>
+</svg>
