@@ -133,4 +133,4 @@ Forks are welcome under the [MIT license](LICENSE). Contributor rules (for human
 
 ---
 
-Built by [@ducharnesylvain](https://github.com/ducharnesylvain).
+Built by **Sylvain Ducharne**, product leader in platforms, marketplaces and AI. [LinkedIn](https://www.linkedin.com/in/sylvainducharne/) | [GitHub](https://github.com/ducharnesylvain) <!-- sensitive-ok: author credit chosen by the owner -->
